@@ -1,6 +1,7 @@
 import logo from './logo.png';
 import './App.css';
 import { useState } from 'react';
+import { calculateCommission } from './services/api';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,7 @@ function App() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,24 +29,25 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    // TODO: Replace with actual API call to backend
-    setTimeout(() => {
-      // Mock calculation for now
-      const localCommission = parseFloat(formData.localSalesCount) * parseFloat(formData.averageSaleAmount) * 0.20;
-      const foreignCommission = parseFloat(formData.foreignSalesCount) * parseFloat(formData.averageSaleAmount) * 0.35;
-      const avalphaTechnologiesTotal = localCommission + foreignCommission;
-
-      const competitorLocal = parseFloat(formData.localSalesCount) * parseFloat(formData.averageSaleAmount) * 0.02;
-      const competitorForeign = parseFloat(formData.foreignSalesCount) * parseFloat(formData.averageSaleAmount) * 0.0755;
-      const competitorTotal = competitorLocal + competitorForeign;
-
+    try {
+      const requestData = {
+        localSalesCount: parseInt(formData.localSalesCount, 10),
+        foreignSalesCount: parseInt(formData.foreignSalesCount, 10),
+        averageSaleAmount: parseFloat(formData.averageSaleAmount)
+      };
+      const result = await calculateCommission(requestData);
       setResults({
-        avalphaTechnologiesCommission: avalphaTechnologiesTotal.toFixed(2),
-        competitorCommission: competitorTotal.toFixed(2)
+        avalphaTechnologiesCommission: result.avalphaCommission.total.toFixed(2),
+        competitorCommission: result.competitorCommission.total.toFixed(2)
       });
+    } catch (error) {
+      console.error("Calculation error:", error.message);
+      setError(error.message || 'An unexpected error occurred.');
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -109,6 +112,7 @@ function App() {
               >
                 {isLoading ? 'Calculating...' : 'Calculate Commission'}
               </button>
+              {error && <p className="error-message">{error}</p>}
             </form>
           </div>
 
