@@ -1,33 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
+using AvalphaTechnologies.CommissionCalculator.DTOs;
+using AvalphaTechnologies.CommissionCalculator.Services;
 
-namespace AvalphaTechnologies.CommissionCalculator.Controllers
+namespace AvalphaTechnologies.CommissionCalculator.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class CommissionController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CommisionController : ControllerBase
+    private readonly ICommissionService _commissionService;
+
+    public CommissionController(ICommissionService commissionService)
     {
-        [ProducesResponseType(typeof(CommissionCalculationResponse), 200)]
-        [HttpPost]
-        public IActionResult Calculate(CommissionCalculationRequest calculationRequest)
+        _commissionService = commissionService;
+    }
+
+    [HttpPost("calculate")]
+    [ProducesResponseType(typeof(CommissionResponse), 200)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public IActionResult Calculate([FromBody] CommissionRequest request)
+    {
+        try
         {
-            return Ok(new CommissionCalculationResponse() { 
-                AvalphaTechnologiesCommissionAmount = 999,
-                CompetitorCommissionAmount = 100
-            });
+            var result = _commissionService.Calculate(request);
+            return Ok(result);
         }
-    }
-
-    public class CommissionCalculationRequest
-    {
-        public int LocalSalesCount { get; set; }
-        public int ForeignSalesCount { get; set; }
-        public decimal AverageSaleAmount { get; set; }
-    }
-
-    public class CommissionCalculationResponse
-    {
-        public decimal AvalphaTechnologiesCommissionAmount { get; set; }
-
-        public decimal CompetitorCommissionAmount { get; set; }
+        catch (Exception)
+        {
+            // In a real app, log the exception `ex` with a logging framework
+            return StatusCode(500, new { message = "An unexpected error occurred." });
+        }
     }
 }
