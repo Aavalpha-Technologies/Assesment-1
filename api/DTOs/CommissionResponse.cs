@@ -1,5 +1,5 @@
 namespace AvalphaTechnologies.CommissionCalculator.DTOs;
-// data api will sent back to frontend
+//outgoing data api will sent back to frontend
 public record CommissionResponse
 {
     public required CommissionDetails AvalphaCommission { get; init; }
