@@ -1,85 +1,84 @@
-# 🧮 Commission Calculator — Technical Assessment
+# Avalpha Commission Calculator - Notes
 
-> Finish and ship a production-quality Commission Calculator for **Avalpha Technologies**.  
-> The API and React app are scaffolded; the controller exists but the logic & wiring are incomplete **by design**.
+## Project Overview
+This project implements a **commission calculator** for Avalpha Technologies. It calculates commissions for **local and foreign sales** for both Avalpha and competitors. The project consists of a **C#/.NET backend API** and a **React frontend**.
 
----
+- **Backend**: ASP.NET Core Web API  
+  - `CommissionService` handles the calculation logic  
+  - `CommissionController` exposes `/commission` endpoint  
 
-## 🚀 What you’ll build
-
-- Connect **frontend (React)** ↔ **backend (C#/.NET)**  
-- Implement commission calculations in the C# controller  
-- Deliver clean, production-ready code (tests, structure, readability)
-
-⏱ **Timebox:** up to **4 hours max**. Be pragmatic. Prioritize correctness, clarity, and the essentials.
+- **Frontend**: React  
+  - Form to input `localSalesCount`, `foreignSalesCount`, and `averageSaleAmount`  
+  - Displays Avalpha and Competitor commissions instantly  
 
 ---
 
-## 🔀 Before you start (Fork + Setup)
-
-1. **Fork** this repository into your own GitHub account.  
-2. **Clone** your fork locally.  
-3. Work in a feature branch, e.g. `feat/commission-impl`.  
-4. When done, push to your fork and open a **Pull Request** back to your fork’s `main`.  
-   - Add a short **README-notes.md** describing decisions, trade-offs, and anything unfinished.  
-5. Share your fork/PR link with us.
-
-> ✅ We want to see how you think, structure, and ****. Small, meaningful commits > one giant commit.
+## Key Decisions
+- Created **CommissionService** to separate business logic from controller  
+- Controller handles only API request/response  
+- Used **in-memory calculations** instead of a database for simplicity  
+- React frontend communicates with backend via **fetch API**  
 
 ---
 
-## 🧠 Business Rules
-
-At **Avalpha Technologies**:
-- **Local Sales Commission:** **20%**
-- **Foreign Sales Commission:** **35%**
-
-Competitors pay:
-- **Local:** **2%**
-- **Foreign:** **7.55%**
-
-**Inputs:**
-- `localSalesCount` (number)  
-- `foreignSalesCount` (number)  
-- `averageSaleAmount` (currency/number)  
-
-**Output (example):**
-
-Local Sales count: 10
-Foreign Sales count: 10
-Average Sales Amount: £100
-
-Avalpha Commission:
-
-Local = 20% * 10 * 100 = £200
-
-Foreign = 35% * 10 * 100 = £350
-
-Total = £550
-
-Competitor Commission:
-
-Local = 2% * 10 * 100 = £20
-
-Foreign = 7.55% * 10 * 100 = £75.5
-
-Total = £95.5
-
-## 🧩 Your Tasks (Checklist)
-
-- [ ] Wire up the **React frontend** to call the backend API  
-- [ ] Implement calculation logic 
-- [ ] Validate inputs (numbers ≥ 0, sensible upper bounds)  
-- [ ] Return a typed, well-structured response (DTO)  
-- [ ] Display results in the UI with clear labels and currency formatting  
-- [ ] Handle errors gracefully (backend & UI)  
-- [ ] Provide basic **docs**: how to run, how to test, decisions  
-- [ ] Keep commits small and messages clear  
+## Trade-offs
+- No database; calculations are lost on restart  
+- Unit tests partially implemented (could be expanded for production)  
+- Frontend styling is basic for functionality and clarity  
 
 ---
 
-## 🧱 Tech Stack
+## Folder Structure
 
-- **Frontend:** React (Vite/CRA), TypeScript preferred (if scaffolded), Fetch/Axios OK  
-- **Backend:** .NET (C#), minimal API or MVC controller  
-- **Tests:** xUnit/NUnit + React Testing Library / Vitest/Jest  
+Assesment-1/
+├─ api/
+│ ├─ Controllers/
+│ │ CommisionController.cs
+│ ├─ Models/
+│ │ CommissionRequest.cs
+│ │ CommissionResponse.cs
+│ ├─ Services/
+│ │ CommissionService.cs
+│ ├─ Program.cs
+│ ├─ Assesment-1.csproj
+├─ ui/
+│ ├─ src/
+│ │ components/
+│ │ CommissionForm.js
+│ │ services/
+│ │ api.js
+│ │ App.js
+│ │ index.js
+├─ README-notes.md
+
+
+---
+
+## How to Run
+
+### Backend (API)
+1. Open `api` project in **Visual Studio**  
+2. Build solution → `Ctrl+Shift+B`  
+3. Run API → Swagger available at `https://localhost:5001/swagger`  
+
+### Frontend (React)
+1. Open `ui` folder in **VS Code**  
+2. Install dependencies: `npm install`  
+3. Start React app: `npm start`  
+4. Open browser: `http://localhost:3000`  
+5. Enter sales data → see Avalpha & Competitor commissions
+
+---
+
+## Unfinished / Future Improvements
+- Add **unit tests** for `CommissionService`  
+- Improve **frontend UI/UX styling**  
+- Add **database persistence** for sales and commission records  
+- Add **error handling** for invalid inputs  
+
+---
+
+## Author
+Mohit Patil
+
+
