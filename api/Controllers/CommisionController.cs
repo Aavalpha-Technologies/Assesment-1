@@ -1,33 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace AvalphaTechnologies.CommissionCalculator.Controllers
+[ApiController]
+[Route("[controller]")]
+public class CommissionController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class CommisionController : ControllerBase
+    private readonly CommissionService _service;
+
+    public CommissionController()
     {
-        [ProducesResponseType(typeof(CommissionCalculationResponse), 200)]
-        [HttpPost]
-        public IActionResult Calculate(CommissionCalculationRequest calculationRequest)
-        {
-            return Ok(new CommissionCalculationResponse() { 
-                AvalphaTechnologiesCommissionAmount = 999,
-                CompetitorCommissionAmount = 100
-            });
-        }
+        _service = new CommissionService(); // Can be injected via DI for better design
     }
 
-    public class CommissionCalculationRequest
+    [HttpPost]
+    public IActionResult Calculate([FromBody] CommissionRequest request)
     {
-        public int LocalSalesCount { get; set; }
-        public int ForeignSalesCount { get; set; }
-        public decimal AverageSaleAmount { get; set; }
-    }
-
-    public class CommissionCalculationResponse
-    {
-        public decimal AvalphaTechnologiesCommissionAmount { get; set; }
-
-        public decimal CompetitorCommissionAmount { get; set; }
+        var result = _service.Calculate(request.LocalSalesCount, request.ForeignSalesCount, request.AverageSaleAmount);
+        return Ok(result);
     }
 }
